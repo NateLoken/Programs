@@ -1,0 +1,9 @@
+1. I think this will take around 4 hours to complete.
+
+2. 
+Thought/Design: 1 hour
+Programming: 2 hours
+Debugging: 3 hours
+Total: 6 hours
+
+I was 66.7% accurate at esimating the amount of time that it would take me to complete this project.

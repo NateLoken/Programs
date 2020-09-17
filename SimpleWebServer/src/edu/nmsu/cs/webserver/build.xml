@@ -1,0 +1,19 @@
+<project name = "WebServer" default = "compile">
+
+    <!-- Compiles all java files -->
+    <target name = "compile">
+        <javac srcdir = "."  includeantruntime = "false"/>
+    </target>
+
+    <!-- Allows us to write ant run - Clean -> Compile -> Run -->
+    <target name = "run" depends = "compile" >
+        <java classname = "WebServer" fork = "true"/>
+    </target>
+
+    <!-- Cleans all classes from compilation -->
+    <target name = "clean">
+        <delete file = "WebServer.class"/>
+        <delete file = "WebWorker.class"/>
+    </target>
+
+</project>
