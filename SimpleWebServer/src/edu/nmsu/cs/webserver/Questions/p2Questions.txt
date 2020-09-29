@@ -1,0 +1,9 @@
+1. My estimation time was about 7 hours
+
+2. 
+Thought/Design: 1-1/2 hours
+Programming: 2 1/2 hours
+Debugging: 4 hours
+Total: 8 hours
+
+3. I was 87.5% accurate with my original estimate. 
