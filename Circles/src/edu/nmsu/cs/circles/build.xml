@@ -1,0 +1,44 @@
+<project name = "Circles" default="compile">
+
+    <property name = "junitjar" location="/lib"/>
+    
+    <target name = "compile" description = "compile the source">
+        <javac srcdir = "." includeantruntime = "false" debug = "true" classpath = "${junitjar}"/>
+        
+    </target>
+    
+    <target name= "run" depends = "compile">
+        <echo message = " Running args:"/>
+        <java classname = "CircleRun" fork = "true">
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+        </java>
+    </target>
+    
+    <target name = "testCircle1" depends = "compile">
+        <java jar = "${junitjar}" classpath = "." fork = "true">
+            <arg value = "-classpath=."/>
+            <arg value = "-c"/>
+            <arg value = "Circle1Test"/>
+        </java>
+    </target>
+
+    <target name = "testCircle2" depends = "compile">
+        <java jar = "${junitjar}" classpath = "." fork = "true">
+            <arg value = "-classpath=."/>
+            <arg value = "-c"/>
+            <arg value = "Circle2Test"/>
+        </java>
+    </target>
+    
+    <target name = "test" depends = "compile">
+        <java jar = "${junitjar}" classpath = "." fork = "true">
+            <arg value = "-classpath=."/>
+            <arg value = "-c"/>
+            <arg value = "Circel1Test Circle2Test"/>
+        </java>
+    </target>
+</project>
