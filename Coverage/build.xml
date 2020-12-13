@@ -56,6 +56,45 @@
 				<arg value="6" />
 			</java>
 		</jacoco:coverage>
+
+		<echo message="TEST RacingScore1: 9 8 6" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="9" />
+				<arg value="8" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="TEST RacingScore1: 8 6 9" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="9" />
+				<arg value="8" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="Test RacingScore1: 1" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="1" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="Test RacingScore1: test test test" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="test" />
+				<arg value="test" />
+				<arg value="test" />
+			</java>
+		</jacoco:coverage>
+
 		<echo message="TEST RacingScore2: 8 9 6" />
 		<jacoco:coverage destfile="${result.exec.file}">
 			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
@@ -65,7 +104,84 @@
 				<arg value="6" />
 			</java>
 		</jacoco:coverage>
+
+		<echo message="TEST RacingScore2: 8 9 11" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="8" />
+				<arg value="9" />
+				<arg value="11" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="TEST RacingScore2: 9 8 11" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="9" />
+				<arg value="8" />
+				<arg value="11" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="TEST RacingScore2: 11 9 8" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="11" />
+				<arg value="9" />
+				<arg value="8" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST RacingScore2: 9 9 9" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="9" />
+				<arg value="9" />
+				<arg value="9" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="Test RacingScore2: 1" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="1" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="Test RacingScore1: " />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="null" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="Test RacingScore2: test test test" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="test" />
+				<arg value="test" />
+				<arg value="test" />
+			</java>
+		</jacoco:coverage>
+
+		<echo message="TEST RacingScore2: -1 9 6" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="-1" />
+				<arg value="9" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
 	</target>
+	
 
 	<target name="report" depends="test,checkReport" unless="report.notneeded">
 		<echo>report needed...</echo>
@@ -108,4 +224,3 @@
 	</target>
 
 </project>
-
