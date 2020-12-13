@@ -1,0 +1,19 @@
+<project name="Program 1" default="compile">
+
+    <property name="src.dir" location="." />
+    <property name="build.dir" location="bin/" />
+
+    <target name="compile">
+        <javac srcdir="${src.dir}"  includeantruntime = "false"/>
+    </target>
+
+    <target name = "run" depends = "compile">
+        <java classname = "edu.nmsu.cs.webserver.WebServer" fork = "true"/>
+    </target>
+
+    <target name="clean">
+        <delete>
+            <fileset dir="." includes="**/*.class" />
+        </delete>
+    </target>
+</project>

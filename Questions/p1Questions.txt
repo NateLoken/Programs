@@ -1,0 +1,9 @@
+1. I think this will take about 4 hours
+
+2.
+    Thought/Design: 2 hours
+    Programming: 3 hours
+    Debugging: 4 hours
+    Total: 9 hours
+
+3. I was 125% accurate for time estimation.

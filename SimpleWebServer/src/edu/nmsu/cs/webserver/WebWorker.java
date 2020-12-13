@@ -21,10 +21,11 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+// import java.io.BufferedReader;
+// import java.io.InputStream;
+// import java.io.InputStreamReader;
+// import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
@@ -34,107 +35,163 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	static final File WEB_ROOT = new File(".");
+	static final String DEFAULT_FILE = "index.html";
+	static final String FILE_NOT_FOUND = "404.html";
+	private int errorCode;
+	String userDirectory = System.getProperty("user.dir");
 
 	/**
-	 * Constructor: must have a valid open socket
-	 **/
+	* Constructor: must have a valid open socket
+	**/
 	public WebWorker(Socket s)
 	{
-		socket = s;
+	   socket = s;
+	}
+
+	public void setCode(int num){
+	   this.errorCode = num;
+	}
+
+	public int getCode(){
+	   return this.errorCode;
 	}
 
 	/**
-	 * Worker thread starting point. Each worker handles just one HTTP request and then returns, which
-	 * destroys the thread. This method assumes that whoever created the worker created it with a
-	 * valid open socket object.
-	 **/
+	* Worker thread starting point. Each worker handles just one HTTP 
+	* request and then returns, which destroys the thread. This method
+	* assumes that whoever created the worker created it with a valid
+	* open socket object.
+	**/
 	public void run()
 	{
-		System.err.println("Handling connection...");
-		try
-		{
-			InputStream is = socket.getInputStream();
-			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
-			os.flush();
-			socket.close();
-		}
-		catch (Exception e)
-		{
-			System.err.println("Output error: " + e);
-		}
-		System.err.println("Done handling connection.");
-		return;
+	   System.err.println("Handling connection...");
+	   try {
+	      InputStream  is = socket.getInputStream();
+	      OutputStream os = socket.getOutputStream();
+	      String fileContent = readHTTPRequest(is);
+	      writeHTTPHeader(os,"text/html", fileContent);
+	      writeContent(os, fileContent);
+	      os.flush();
+	      socket.close();
+	   } catch (Exception e) {
+	      System.err.println("Output error: "+e);
+	   }
+	   System.err.println("Done handling connection.");
+	   return;
 	}
 
 	/**
-	 * Read the HTTP request header.
-	 **/
-	private void readHTTPRequest(InputStream is)
+	* Read the HTTP request header.
+	**/
+	private String readHTTPRequest(InputStream is)
 	{
-		String line;
-		BufferedReader r = new BufferedReader(new InputStreamReader(is));
-		while (true)
-		{
-			try
-			{
-				while (!r.ready())
-					Thread.sleep(1);
-				line = r.readLine();
-				System.err.println("Request line: (" + line + ")");
-				if (line.length() == 0)
-					break;
-			}
-			catch (Exception e)
-			{
-				System.err.println("Request error: " + e);
-				break;
-			}
-		}
-		return;
+	   String line;
+	   String path = "";
+	   BufferedReader r = new BufferedReader(new InputStreamReader(is));
+	   while (true) {
+	      try {
+	         while (!r.ready()) Thread.sleep(1);
+	         line = r.readLine();
+	         if(line.contains("GET ")){
+	            path = line.substring(4);
+	            for(int i = 0; i < path.length(); i++){
+	               if(path.charAt(i) == ' ')
+	                  path = path.substring(0, i);
+	            }
+	         }
+	         System.err.println("Request line: ("+line+")");
+	         if (line.length()==0) break;
+	      } catch (Exception e) {
+	         System.err.println("Request error: "+e);
+	         break;
+	      }
+	   }
+	   if(path.equals("/"))
+	   	path = "/" + DEFAULT_FILE;
+	   File file = new File(userDirectory+path);
+	   if(file.exists()){
+	      setCode(200);
+	   }
+	   else{
+	      setCode(404);
+	   }
+	   return path;
 	}
 
 	/**
-	 * Write the HTTP header lines to the client network connection.
-	 * 
-	 * @param os
-	 *          is the OutputStream object to write to
-	 * @param contentType
-	 *          is the string MIME content type (e.g. "text/html")
-	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	* Write the HTTP header lines to the client network connection.
+	* @param os is the OutputStream object to write to
+	* @param contentType is the string MIME content type (e.g. "text/html")
+	**/
+	private void writeHTTPHeader(OutputStream os, String contentType, String contentPath) throws Exception
 	{
-		Date d = new Date();
-		DateFormat df = DateFormat.getDateTimeInstance();
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
-		os.write((df.format(d)).getBytes());
-		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
-		os.write("Connection: close\n".getBytes());
-		os.write("Content-Type: ".getBytes());
-		os.write(contentType.getBytes());
-		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
+	   String path = userDirectory + contentPath;
+	   Date d = new Date();
+	   DateFormat df = DateFormat.getDateTimeInstance();
+	   df.setTimeZone(TimeZone.getTimeZone("GMT"));
+	   if(getCode() == 200){
+	      os.write("HTTP/1.1 200 OK\n".getBytes());
+	      System.out.println("Content Collected: " + path + " successfully");
+	   }
+	   else{
+	      os.write("HTTP/1.1 404 ERROR\n".getBytes());
+	   }
+	   os.write("Date: ".getBytes());
+	   os.write((df.format(d)).getBytes());
+	   os.write("\n".getBytes());
+	   os.write("Server: Nate's Server\n".getBytes());
+	   //os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
+	   //os.write("Content-Length: 438\n".getBytes()); 
+	   os.write("Connection: close\n".getBytes());
+	   os.write("Content-Type: ".getBytes());
+	   os.write(contentType.getBytes());
+	   os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+	   return;
 	}
 
-	/**
-	 * Write the data content to the client network connection. This MUST be done after the HTTP
-	 * header has been written out.
-	 * 
-	 * @param os
-	 *          is the OutputStream object to write to
-	 **/
-	private void writeContent(OutputStream os) throws Exception
+	/**x  
+	* Write the data content to the client network connection. This MUST
+	* be done after the HTTP header has been written out.
+	* @param os is the OutputStream object to write to
+	**/
+	private void writeContent(OutputStream os, String contentPath) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	   final String date = "<cs371date>";
+	   final String server = "<cs371server>";
+	   String content = "";
+	   String path = userDirectory + contentPath;
+	   Date d = new Date();
+	   String newDate;
+	   DateFormat df = DateFormat.getDateTimeInstance();
+	   df.setTimeZone(TimeZone.getTimeZone("GMT"));
+	   newDate = df.format(d);
+	   try{  
+	      File fileName = new File(path);
+	      BufferedReader inBuffer = new BufferedReader(new FileReader(fileName));
+	      while((content = inBuffer.readLine()) != null){
+	         if(content.contains(date)){
+				os.write(content.replace(date,newDate).getBytes());
+	         }
+	         if(content.contains(server)){
+				os.write(content.replace(server, "My Server 1.0").getBytes());
+			 }
+	         os.write("\n".getBytes());
+	      }
+	      inBuffer.close();
+	  
+	   }
+	   catch(Exception e){
+	      System.err.println("ERROR: File does not exist");
+	      os.write("HTTP/1.1 404: Not Found".getBytes());
+	      File file = new File(FILE_NOT_FOUND);
+	      BufferedReader inBuffer = new BufferedReader(new FileReader(file));
+	      while((content = inBuffer.readLine()) != null){
+	         os.write(content.getBytes());
+	         os.write("\n".getBytes());
+	      }
+	      inBuffer.close();
+	   }
 	}
 
 } // end class
