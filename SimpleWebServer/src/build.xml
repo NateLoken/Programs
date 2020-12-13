@@ -1,6 +1,6 @@
-<project name="Program 1" default="compile">
+<project name="Program 1" default="run">
 
-    <property name="src.dir" location="." />
+    <property name="src.dir" location="./" />
     <property name="build.dir" location="bin/" />
 
     <target name="compile">
@@ -8,7 +8,7 @@
     </target>
 
     <target name = "run" depends = "compile">
-        <java classname = "edu.nmsu.cs.webserver.WebServer" fork = "true"/>
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${src.dir}" dir="www/" fork = "true"/>
     </target>
 
     <target name="clean">
